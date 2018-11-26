@@ -1,0 +1,9 @@
+[submodule "dep/string-view-lite"]
+	path = dep/string-view-lite
+	url = git@github.com:martinmoene/string-view-lite.git
+[submodule "dep/span-lite"]
+	path = dep/span-lite
+	url = git@github.com:martinmoene/span-lite.git
+[submodule "dep/cxxopts"]
+	path = dep/cxxopts
+	url = git@github.com:jarro2783/cxxopts.git

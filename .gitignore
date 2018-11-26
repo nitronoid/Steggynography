@@ -1,0 +1,7 @@
+steg
+obj
+*.pro.user*
+*.qmake*
+Makefile
+output
+images
