@@ -13,8 +13,11 @@ inline static auto getParser()
   // clang-format off
   parser.allow_unrecognised_options().add_options() 
     ("h,help", "Print help") 
+    ("l,length", "Length of message to decode", cxxopts::value<steg::uinteger>())
     ("s,source", "Source file name", cxxopts::value<std::string>()) 
     ("t,text", "Text to encode", cxxopts::value<std::string>()) 
+    ("p,pixel-offset", "Offset in number of pixels before encoding begins", 
+     cxxopts::value<steg::uinteger>()->default_value("0")) 
     ("o,output", "Output file name (with extension)",
      cxxopts::value<std::string>()->default_value("message.png")) 
     ;
@@ -29,7 +32,7 @@ int main(int argc, char* argv[])
   // Parse the commandline options
   auto parser     = getParser();
   const auto args = parser.parse(argc, argv);
-  if (args.count("help") || !args.count("source") || !args.count("text"))
+  if (args.count("help") || !args.count("source") || !(args.count("length") != args.count("text")))
   {
     std::cout << parser.help() << '\n';
     std::exit(0);
@@ -40,14 +43,20 @@ int main(int argc, char* argv[])
     steg::readImage<steg::byte3>(args["source"].as<std::string>());
   auto& sourceImageData = imgResult.m_data;
   const auto& imageDimensions = imgResult.m_imageDim;
+  const auto offset = args["pixel-offset"].as<steg::uinteger>();
 
-  auto text = args["text"].as<std::string>();
-
-  steg::encode(sourceImageData, text);
-  steg::writeImage(args["output"].as<std::string>(),
-                   steg::span<steg::byte3>(sourceImageData),
-                   imageDimensions);
-
-  auto decoded = steg::decode(sourceImageData, text.size());
-  std::cout << "text: " << decoded << '\n';
+  if (args.count("length"))
+  {
+    auto textLength = args["length"].as<steg::uinteger>();
+    auto decoded = steg::decode(sourceImageData, textLength, offset);
+    std::cout << "Decoded text is:\n" << decoded << '\n';
+  }
+  else
+  {
+    auto text = args["text"].as<std::string>();
+    steg::encode(sourceImageData, text, offset);
+    steg::writeImage(args["output"].as<std::string>(),
+                     steg::span<steg::byte3>(sourceImageData),
+                     imageDimensions);
+  }
 }
