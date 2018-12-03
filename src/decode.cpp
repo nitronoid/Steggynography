@@ -16,9 +16,6 @@ std::string decode(const span<byte3> _encodedImage,
   // allocate space for the text
   std::vector<byte> textArray(_textLength);
 
-  // Keep a counter of what bit we need to write to
-  uinteger bitCount = 0u;
-
   // Character offset in number of bits
   const uinteger bitOffset = _characterOffset * nbits;
   // Calculate how many pixels we need to offset for this
@@ -29,7 +26,7 @@ std::string decode(const span<byte3> _encodedImage,
   uinteger channel = bitOffset - bitPxOffset * 3u;
 
   // Iterate over enough pixels to give us the full text
-  for (; bitCount < numBitsInText; ++pidx)
+  for (uinteger bitCount = 0u; bitCount < numBitsInText; ++pidx)
   {
     // Get the current pixel
     const byte3& pixel = _encodedImage[pidx];
