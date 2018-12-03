@@ -1,30 +1,31 @@
 #include "encode.h"
+#include "bit_manip.h"
 
+#include <limits>
 #include <iostream>
 
 BEGIN_STEGGYNOGRAPHY_NAMESPACE
 
-void encode(span<byte3> _image, const string_view _text, const uinteger _offset)
+void encode(span<byte3> _sourceImage,
+            const string_view _text,
+            const uinteger _characterOffset,
+            const uinteger _pixelOffset)
 {
-  constexpr auto nbits = charbits{}.size();
+  constexpr auto nbits = std::numeric_limits<byte>::digits;
 
-  byte* bptr = &_image[_offset].x;
+  const auto pxOffset = _pixelOffset + (_characterOffset * nbits) / 3; 
+  const auto channelOffset = (_characterOffset * nbits) % 3; 
+
+  byte* bptr = &_sourceImage[pxOffset][channelOffset];
 
   // Iterate over every byte of the text
   for (byte c : _text)
   {
-    // create a bitset from this char
-    charbits charBits(c);
-
     // iterate over all bits of the char
     for (byte bit = 0u; bit < nbits; ++bit, ++bptr)
     {
-      // create a bitset from the current channel of the current pixel
-      charbits channelBits(*bptr);
       // set the lsb to be the current bit of our char
-      channelBits.set(0u, charBits[bit]);
-      // write the new channel byte into our image
-      *bptr = channelBits.to_ulong();
+      *bptr = setBit(*bptr, 0u, getBit(c, bit));
     }
   }
 }

@@ -4,7 +4,6 @@
 #include <nonstd/span.hpp>
 #include <nonstd/string_view.hpp>
 
-#include <bitset>
 #include <cstdint>
 #include <memory>
 #include <vec2.hpp>
@@ -37,8 +36,6 @@ DECLARE_MATH_TYPE_ALIASES(byte, uint8_t, glm::defaultp);
 #undef STRINGIFY_NX
 #undef PPCAT
 #undef PPCAT_NX
-
-using charbits = std::bitset<sizeof(byte) * 8u>;
 
 using nonstd::span;
 using nonstd::string_view;

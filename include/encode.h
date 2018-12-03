@@ -9,7 +9,8 @@ BEGIN_STEGGYNOGRAPHY_NAMESPACE
 
 void encode(span<byte3> _sourceImage,
             const string_view _text,
-            const uinteger _offset = 0u);
+            const uinteger _characterOffset = 0u,
+            const uinteger _pixelOffset = 0u);
 
 END_STEGGYNOGRAPHY_NAMESPACE
 
